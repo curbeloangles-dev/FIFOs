@@ -5,7 +5,6 @@ This repository contains a collection of FIFO (First-In-First-Out) hardware IP c
 - `asymmetric_fifo/` — Asymmetric-width synchronous FIFO (separate data widths on write/read sides).
 - `asynchronous_fifo/` — Asynchronous FIFO for crossing clock domains using dual-port memory and proper pointer synchronization.
 - `fifo_bram/` — FIFO implemented using block RAM (BRAM) primitives for FPGA BRAM-based buffering.
-- `fifo_distributed/` — FIFO using distributed resources (LUTs/FFs) for small FIFOs.
 - `one_bit_ring_fifo/` — One-bit ring FIFO: a minimal FIFO structure with ring buffer behavior for single-bit flows.
 
 Each implementation follows a similar folder layout:
@@ -25,9 +24,6 @@ Asynchronous FIFO for crossing clock domains with independent read and write clo
 
 ### fifo_bram
 Implement large FIFOs using FPGA block RAM (BRAM) to provide compact, high-capacity buffering.
-
-### fifo_distributed
-Small FIFO implemented using distributed logic (LUTRAM or registers), suitable for small depth/low-latency buffering.
 
 ### one_bit_ring_fifo
 A minimal, single-bit ring FIFO used for low-overhead bitwise buffering. Useful for control signals or single-bit streams.

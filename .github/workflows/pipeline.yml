@@ -29,6 +29,7 @@ jobs:
 
       - name: Run asymmetric_fifo test
         run: |
+          cd asymmetric_fifo/tb
           pytest -o log_cli=True test_asymmetric_sync_fifo.py
 
   asymmetric_fifo_release:
@@ -93,6 +94,7 @@ jobs:
 
       - name: Run asynchronous_fifo test
         run: |
+          cd asynchronous_fifo/tb
           pytest -o log_cli=True test_async_fifo.py
 
   asynchronous_fifo_release:
@@ -157,6 +159,7 @@ jobs:
 
       - name: Run fifo_bram test
         run: |
+          cd fifo_bram/tb
           pytest -o log_cli=True test_fifo_bram.py
 
   fifo_bram_release:
@@ -221,6 +224,7 @@ jobs:
 
       - name: Run one_bit_ring_fifo test
         run: |
+          cd one_bit_ring_fifo/tb
           pytest -o log_cli=True test_one_bit_ring_fifo.py
 
   one_bit_ring_fifo_release:
