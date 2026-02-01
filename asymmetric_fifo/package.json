@@ -1,0 +1,21 @@
+{
+  "name": "@curbeloangles-dev/asymmetric_fifo",
+  "version": "1.0.0",
+  "author": "curbeloangles",
+  "description": "Asymmetric FIFO",
+  "keywords": [
+    "FIFO",
+    "Asymmetric"
+  ],
+  "files": [
+    "doc",
+    "src",
+    "tb",
+    "README.md"
+  ],
+  "dependencies": {},
+  "scripts": {
+    "postinstall": "",
+    "test": "cd tb; pytest -o log_cli=True test_asymmetric_sync_fifo.py"
+  }
+}

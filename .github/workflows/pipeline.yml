@@ -1,0 +1,258 @@
+name: CDC CI/CD pipeline
+on: [push, pull_request]
+
+jobs:
+  asymmetric_fifo_test:
+    runs-on: ubuntu-latest
+    env:
+      SIM: ghdl
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup GHDL
+        uses: ghdl/setup-ghdl@v1
+        with:
+          version: nightly
+          backend: llvm
+          investigate: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10.12'
+
+      - name: Install dependencies
+        run: |
+          pip install cocotb pytest cocotb-test
+
+      - name: Run asymmetric_fifo test
+        run: |
+          pytest -o log_cli=True test_asymmetric_sync_fifo.py
+
+  asymmetric_fifo_release:
+    needs: asymmetric_fifo_test
+    runs-on: ubuntu-latest
+
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://npm.pkg.github.com/'
+
+      - name: Publish asymmetric_fifo IP if version changed
+        working-directory: ./asymmetric_fifo/
+        run: |       
+          # Create temporary .npmrc file in this directory
+          echo "@curbeloangles-dev:registry=https://npm.pkg.github.com/" > .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
+        
+          # Check if the package version already exists
+          VERSION=$(jq -r .version package.json)
+          PKG=@curbeloangles-dev/asymmetric_fifo
+          if ! npm view $PKG@$VERSION --registry=https://npm.pkg.github.com/ > /dev/null 2>&1; then
+            echo "📦 Package $PKG@$VERSION does not exist. Publishing..."
+            npm publish --access public
+            echo "✅ Successfully published $PKG@$VERSION"
+          else
+            echo "✅ Package $PKG@$VERSION already exists. Skipping."
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
+
+
+  asynchronous_fifo_test:
+    runs-on: ubuntu-latest
+    env:
+      SIM: ghdl
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup GHDL
+        uses: ghdl/setup-ghdl@v1
+        with:
+          version: nightly
+          backend: llvm
+          investigate: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10.12'
+
+      - name: Install dependencies
+        run: |
+          pip install cocotb pytest cocotb-test
+
+      - name: Run asynchronous_fifo test
+        run: |
+          pytest -o log_cli=True test_async_fifo.py
+
+  asynchronous_fifo_release:
+    needs: asynchronous_fifo_test
+    runs-on: ubuntu-latest
+
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://npm.pkg.github.com/'
+
+      - name: Publish asynchronous_fifo IP if version changed
+        working-directory: ./asynchronous_fifo/
+        run: |       
+          # Create temporary .npmrc file in this directory
+          echo "@curbeloangles-dev:registry=https://npm.pkg.github.com/" > .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
+        
+          # Check if the package version already exists
+          VERSION=$(jq -r .version package.json)
+          PKG=@curbeloangles-dev/asynchronous_fifo
+          if ! npm view $PKG@$VERSION --registry=https://npm.pkg.github.com/ > /dev/null 2>&1; then
+            echo "📦 Package $PKG@$VERSION does not exist. Publishing..."
+            npm publish --access public
+            echo "✅ Successfully published $PKG@$VERSION"
+          else
+            echo "✅ Package $PKG@$VERSION already exists. Skipping."
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
+
+
+  fifo_bram_test:
+    runs-on: ubuntu-latest
+    env:
+      SIM: ghdl
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup GHDL
+        uses: ghdl/setup-ghdl@v1
+        with:
+          version: nightly
+          backend: llvm
+          investigate: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10.12'
+
+      - name: Install dependencies
+        run: |
+          pip install cocotb pytest cocotb-test
+
+      - name: Run fifo_bram test
+        run: |
+          pytest -o log_cli=True test_fifo_bram.py
+
+  fifo_bram_release:
+    needs: fifo_bram_test
+    runs-on: ubuntu-latest
+
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://npm.pkg.github.com/'
+
+      - name: Publish fifo_bram IP if version changed
+        working-directory: ./fifo_bram/
+        run: |       
+          # Create temporary .npmrc file in this directory
+          echo "@curbeloangles-dev:registry=https://npm.pkg.github.com/" > .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
+        
+          # Check if the package version already exists
+          VERSION=$(jq -r .version package.json)
+          PKG=@curbeloangles-dev/fifo_bram
+          if ! npm view $PKG@$VERSION --registry=https://npm.pkg.github.com/ > /dev/null 2>&1; then
+            echo "📦 Package $PKG@$VERSION does not exist. Publishing..."
+            npm publish --access public
+            echo "✅ Successfully published $PKG@$VERSION"
+          else
+            echo "✅ Package $PKG@$VERSION already exists. Skipping."
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
+
+
+  one_bit_ring_fifo_test:
+    runs-on: ubuntu-latest
+    env:
+      SIM: ghdl
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup GHDL
+        uses: ghdl/setup-ghdl@v1
+        with:
+          version: nightly
+          backend: llvm
+          investigate: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10.12'
+
+      - name: Install dependencies
+        run: |
+          pip install cocotb pytest cocotb-test
+
+      - name: Run one_bit_ring_fifo test
+        run: |
+          pytest -o log_cli=True test_one_bit_ring_fifo.py
+
+  one_bit_ring_fifo_release:
+    needs: one_bit_ring_fifo_test
+    runs-on: ubuntu-latest
+
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://npm.pkg.github.com/'
+
+      - name: Publish one_bit_ring_fifo IP if version changed
+        working-directory: ./one_bit_ring_fifo/
+        run: |       
+          # Create temporary .npmrc file in this directory
+          echo "@curbeloangles-dev:registry=https://npm.pkg.github.com/" > .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
+        
+          # Check if the package version already exists
+          VERSION=$(jq -r .version package.json)
+          PKG=@curbeloangles-dev/one_bit_ring_fifo
+          if ! npm view $PKG@$VERSION --registry=https://npm.pkg.github.com/ > /dev/null 2>&1; then
+            echo "📦 Package $PKG@$VERSION does not exist. Publishing..."
+            npm publish --access public
+            echo "✅ Successfully published $PKG@$VERSION"
+          else
+            echo "✅ Package $PKG@$VERSION already exists. Skipping."
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}

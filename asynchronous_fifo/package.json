@@ -1,0 +1,21 @@
+{
+  "name": "@curbeloangles-dev/asynchronous_fifo",
+  "version": "1.0.0",
+  "author": "curbeloangles",
+  "description": "Asynchronous FIFO",
+  "keywords": [
+    "Asynchronous",
+    "FIFO"
+  ],
+  "files": [
+    "doc",
+    "src",
+    "tb",
+    "README.md"
+  ],
+  "dependencies": {},
+  "scripts": {
+    "postinstall": "",
+    "test": "cd tb; pytest -o log_cli=True test_async_fifo.py"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "@curbeloangles-dev/fifo_bram",
+  "version": "1.0.0",
+  "author": "curbeloangles",
+  "description": "FIFO BRAM",
+  "keywords": [
+    "FIFO",
+    "BRAM"
+  ],
+  "files": [
+    "doc",
+    "src",
+    "tb",
+    "README.md"
+  ],
+  "dependencies": {},
+  "scripts": {
+    "postinstall": "",
+    "test": "cd tb; pytest -o log_cli=True test_fifo_bram.py"
+  }
+}

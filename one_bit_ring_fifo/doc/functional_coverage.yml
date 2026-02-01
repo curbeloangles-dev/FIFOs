@@ -1,0 +1,25 @@
+one_bit_ring_fifo:
+  cover_percentage: 100.0
+  coverage: 4
+  size: 4
+  type: <class 'cocotb_coverage.coverage.CoverItem'>
+one_bit_ring_fifo.empty:
+  at_least: 1
+  bins:_hits:
+    empty: 521
+    no_empty: 3158
+  cover_percentage: 100.0
+  coverage: 2
+  size: 2
+  type: <class 'cocotb_coverage.coverage.CoverPoint'>
+  weight: 1
+one_bit_ring_fifo.full:
+  at_least: 1
+  bins:_hits:
+    full: 183
+    no_full: 3496
+  cover_percentage: 100.0
+  coverage: 2
+  size: 2
+  type: <class 'cocotb_coverage.coverage.CoverPoint'>
+  weight: 1

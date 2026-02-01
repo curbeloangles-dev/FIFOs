@@ -1,0 +1,24 @@
+{
+  "name": "@curbeloangles-dev/one_bit_ring_fifo",
+  "version": "1.0.0",
+  "description": "One bit ring buffer fifo",
+  "author": "curbeloangles",
+  "keywords": [
+    "FIFO",
+    "ring"
+  ],
+  "files": [
+    "doc",
+    "src",
+    "tb",
+    "README.md"
+  ],
+  "dependencies": {},
+  "scripts": {
+    "postinstall": "",
+    "test_all_ghdl": "cd tb; TEST_NAME=test_all pytest -o log_cli=True test_one_bit_ring_fifo.py",
+    "test_master_random_valid_slave_always_ready_ghdl": "cd tb; TEST_NAME=master_random_valid_slave_always_ready pytest -o log_cli=True test_one_bit_ring_fifo.py::test_one_bit_ring_fifo_tb_ghdl",
+    "test_master_always_valid_slave_always_ready_ghdl": "cd tb; TEST_NAME=master_always_valid_slave_always_ready pytest -o log_cli=True test_one_bit_ring_fifo.py::test_one_bit_ring_fifo_tb_ghdl",
+    "test_master_always_valid_slave_random_ready_ghdl": "cd tb; TEST_NAME=master_always_valid_slave_random_ready pytest -o log_cli=True test_one_bit_ring_fifo.py::test_one_bit_ring_fifo_tb_ghdl"
+  }
+}
