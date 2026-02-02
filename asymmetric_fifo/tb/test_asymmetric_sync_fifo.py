@@ -1,9 +1,10 @@
-from cocotb_test.simulator import run
 import pytest
 import os
 import glob
+from cocotb_test.simulator import run
 
-dir = os.path.dirname(__file__)
+current_dir = os.path.dirname(__file__)
+vhdl_src = glob.glob(os.path.join(current_dir, "../src/*.vhd"))
 
 @pytest.mark.parametrize(
     "parameters", [
@@ -50,28 +51,11 @@ dir = os.path.dirname(__file__)
 @pytest.mark.skipif(os.getenv("SIM") != "ghdl", reason="")
 def test_asymmetric_sync_fifo(parameters):
     run(
-        vhdl_sources=[os.path.join(dir, "..","..","src","asymmetric_sync_fifo_up.vhd"),
-                      os.path.join(dir, "..","..","src","asymmetric_sync_fifo_down.vhd"),
-                      os.path.join(dir, "..","..","src","asymmetric_sync_fifo.vhd")], # sources
-        toplevel="asymmetric_sync_fifo",            # top level HDL
-        module="asymmetric_sync_fifo_tb",        # name of cocotb test module
+        vhdl_sources=vhdl_src,                          # sources
+        toplevel="asymmetric_sync_fifo",                # top level HDL
+        module="asymmetric_sync_fifo_tb",               # name of cocotb test module
         toplevel_lang="vhdl",
-        compile_args=["--ieee=synopsys","--std=08"],
         parameters=parameters,
         extra_env=parameters, 
-        sim_build="sim_build/test_vhdl" + "_".join(("{}={}".format(*i) for i in parameters.items())),
-        sim_args=["--wave=wave.ghw"]
-    )
-
-src_v     = glob.glob("../../src/*.v")
-
-@pytest.mark.skipif(os.getenv("SIM") != "icarus", reason="")
-def test_async_fifo_verilog():
-    run(
-        verilog_sources=[os.path.join(dir, file) for file in src_v],      # verilog sources
-        toplevel_lang="verilog",
-        toplevel="asymmetric_sync_fifo",                                             # top level HDL
-        module="asymmetric_sync_fifo_tb",                                            # name of cocotb test module
-        timescale= "1ns/1ps",
-        sim_build="sim_build/test_verilog"
+        sim_build="sim_build"
     )

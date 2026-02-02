@@ -3,29 +3,25 @@ import pytest
 import os
 import glob
 
-dir = os.path.dirname(__file__)
-src_vhdl  = glob.glob("../../src/*.vhd")
+current_dir = os.path.dirname(__file__)
+vhdl_src = glob.glob(os.path.join(current_dir, "../src/*.vhd"))
 
 @pytest.mark.skipif(os.getenv("SIM") != "ghdl", reason="")
 def test_async_fifo_vhdl():
     run(
-        vhdl_sources=[os.path.join(dir, file) for file in src_vhdl], # sources
-        toplevel="async_fifo",            # top level HDL
-        module="async_fifo_tb",        # name of cocotb test module
+        vhdl_sources=vhdl_src,              # sources
+        toplevel="async_fifo",              # top level HDL
+        module="async_fifo_tb",             # name of cocotb test module
         toplevel_lang="vhdl",
-        sim_build="sim_build/test_vhdl",
-        compile_args=["--ieee=synopsys","--std=08"],
-        sim_args=["--wave=wave.ghw"]
+        sim_build="sim_build"
     )
 
 @pytest.mark.skipif(os.getenv("SIM") != "ghdl", reason="")
 def test_fifo_vhdl():
     run(
-        vhdl_sources=[os.path.join(dir, file) for file in src_vhdl], # sources
-        toplevel="async_fifo",            # top level HDL
-        module="fifo_tb",        # name of cocotb test module
+        vhdl_sources=vhdl_src,              # sources
+        toplevel="async_fifo",              # top level HDL
+        module="fifo_tb",                   # name of cocotb test module
         toplevel_lang="vhdl",
-        sim_build="sim_build/test_vhdl",
-        compile_args=["--ieee=synopsys","--std=08"],
-        sim_args=["--wave=wave.ghw"]
+        sim_build="sim_build"
     )
