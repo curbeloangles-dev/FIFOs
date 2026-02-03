@@ -1,0 +1,13 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1770107816" />
+    <testcase name="continuous_input" classname="fifo_bram_tb" file="/home/yohan/.local/lib/python3.10/site-packages/cocotb/decorators.py" lineno="257" time="0.36980366706848145" sim_time_ns="20150.000001" ratio_time="54488.37260250466" />
+    <testcase name="random_input" classname="fifo_bram_tb" file="/home/yohan/.local/lib/python3.10/site-packages/cocotb/decorators.py" lineno="276" time="1.173372507095337" sim_time_ns="80550.00000100001" ratio_time="68648.27624127663" />
+    <testcase name="random_read" classname="fifo_bram_tb" file="/home/yohan/.local/lib/python3.10/site-packages/cocotb/decorators.py" lineno="295" time="2.6956188678741455" sim_time_ns="79930.000001" ratio_time="29651.817975304293" />
+    <testcase name="random_write_read" classname="fifo_bram_tb" file="/home/yohan/.local/lib/python3.10/site-packages/cocotb/decorators.py" lineno="314" time="0.9772067070007324" sim_time_ns="80750.00000100001" ratio_time="82633.48933496368" />
+    <testcase name="fifo_full" classname="fifo_bram_tb" file="/home/yohan/.local/lib/python3.10/site-packages/cocotb/decorators.py" lineno="333" time="0.15350604057312012" sim_time_ns="5340.0000009999785" ratio_time="34786.90467855795" />
+    <testcase name="fifo_empty" classname="fifo_bram_tb" file="/home/yohan/.local/lib/python3.10/site-packages/cocotb/decorators.py" lineno="370" time="0.3899378776550293" sim_time_ns="20220.000001000008" ratio_time="51854.413637877624">
+      <failure message="Test failed with RANDOM_SEED=1770107816" />
+    </testcase>
+  </testsuite>
+</testsuites>

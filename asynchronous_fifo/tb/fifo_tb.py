@@ -1,9 +1,8 @@
-import cocotb
-from cocotb.triggers import Timer, RisingEdge, FallingEdge, ClockCycles, Join
-from cocotb.result import TestFailure
-from cocotb.clock import Clock
-from cocotb import coroutine
-import numpy as np
+import  cocotb
+from    cocotb.triggers import RisingEdge, Join
+from    cocotb.result   import TestFailure
+from    cocotb.clock    import Clock
+import  numpy           as np
 
 # Constants
 c_CLK_PERIOD_RD = 5 #ns

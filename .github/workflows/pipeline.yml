@@ -25,7 +25,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install cocotb pytest cocotb-test
+          pip install cocotb==1.8.1 pytest cocotb-test
 
       - name: Run asymmetric_fifo test
         run: |
@@ -90,7 +90,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install cocotb pytest cocotb-test
+          pip install cocotb==1.8.1 pytest cocotb-test numpy
 
       - name: Run asynchronous_fifo test
         run: |
@@ -155,7 +155,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install cocotb pytest cocotb-test
+          pip install cocotb==1.8.1 pytest cocotb-test
 
       - name: Run fifo_bram test
         run: |
@@ -220,7 +220,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install cocotb pytest cocotb-test
+          pip install cocotb==1.8.1 pytest cocotb-test numpy
 
       - name: Run one_bit_ring_fifo test
         run: |

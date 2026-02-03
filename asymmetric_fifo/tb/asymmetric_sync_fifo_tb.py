@@ -1,23 +1,10 @@
-import cocotb
-from cocotb.triggers import Timer, RisingEdge, FallingEdge, ClockCycles, Join
-from cocotb.result import TestFailure
-from cocotb.clock import Clock
-from cocotb import coroutine
-import numpy as np
-from random import randint
+import  cocotb
+from    cocotb.triggers import Timer, RisingEdge, Join
+from    cocotb.clock    import Clock
+from    random          import randint
 
 # Constants
 c_CLK_PERIOD_RD = 10 #ns
-
-try :
-    g_INPUT_WIDTH = dut.g_INPUT_WIDTH.value
-except:
-    g_INPUT_WIDTH = 128
-
-try :
-    g_OUTPUT_WIDTH = dut.g_OUTPUT_WIDTH.value
-except:
-    g_OUTPUT_WIDTH = 32
 
 #========================================================================================#
 async def write_data(dut, number):
