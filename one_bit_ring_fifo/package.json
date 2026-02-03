@@ -16,9 +16,9 @@
   "dependencies": {},
   "scripts": {
     "postinstall": "",
-    "test_all_ghdl": "cd tb; TEST_NAME=test_all pytest -o log_cli=True test_one_bit_ring_fifo.py",
-    "test_master_random_valid_slave_always_ready_ghdl": "cd tb; TEST_NAME=master_random_valid_slave_always_ready pytest -o log_cli=True test_one_bit_ring_fifo.py::test_one_bit_ring_fifo_tb_ghdl",
-    "test_master_always_valid_slave_always_ready_ghdl": "cd tb; TEST_NAME=master_always_valid_slave_always_ready pytest -o log_cli=True test_one_bit_ring_fifo.py::test_one_bit_ring_fifo_tb_ghdl",
-    "test_master_always_valid_slave_random_ready_ghdl": "cd tb; TEST_NAME=master_always_valid_slave_random_ready pytest -o log_cli=True test_one_bit_ring_fifo.py::test_one_bit_ring_fifo_tb_ghdl"
+    "test_all": "TEST_NAME=test_all pytest -o log_cli=True test_one_bit_ring_fifo.py",
+    "test_master_random_valid_slave_always_ready_ghdl": "TEST_NAME=master_random_valid_slave_always_ready pytest -o log_cli=True test_one_bit_ring_fifo.py::test_one_bit_ring_fifo_tb_ghdl",
+    "test_master_always_valid_slave_always_ready_ghdl": "TEST_NAME=master_always_valid_slave_always_ready pytest -o log_cli=True test_one_bit_ring_fifo.py::test_one_bit_ring_fifo_tb_ghdl",
+    "test_master_always_valid_slave_random_ready_ghdl": "TEST_NAME=master_always_valid_slave_random_ready pytest -o log_cli=True test_one_bit_ring_fifo.py::test_one_bit_ring_fifo_tb_ghdl"
   }
 }

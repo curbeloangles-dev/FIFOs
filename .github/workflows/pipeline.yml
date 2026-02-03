@@ -224,8 +224,8 @@ jobs:
 
       - name: Run one_bit_ring_fifo test
         run: |
-          cd one_bit_ring_fifo/tb
-          pytest -o log_cli=True test_one_bit_ring_fifo.py
+          cd one_bit_ring_fifo
+          npm run test_all
 
   one_bit_ring_fifo_release:
     needs: one_bit_ring_fifo_test
