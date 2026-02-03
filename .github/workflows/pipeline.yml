@@ -29,8 +29,8 @@ jobs:
 
       - name: Run asymmetric_fifo test
         run: |
-          cd asymmetric_fifo/tb
-          pytest -o log_cli=True test_asymmetric_sync_fifo.py
+          cd asymmetric_fifo
+          npm run test
 
   asymmetric_fifo_release:
     needs: asymmetric_fifo_test
@@ -94,8 +94,8 @@ jobs:
 
       - name: Run asynchronous_fifo test
         run: |
-          cd asynchronous_fifo/tb
-          pytest -o log_cli=True test_async_fifo.py
+          cd asynchronous_fifo
+          npm run test
 
   asynchronous_fifo_release:
     needs: asynchronous_fifo_test
@@ -159,8 +159,8 @@ jobs:
 
       - name: Run fifo_bram test
         run: |
-          cd fifo_bram/tb
-          pytest -o log_cli=True test_fifo_bram.py
+          cd fifo_bram
+          npm run test
 
   fifo_bram_release:
     needs: fifo_bram_test

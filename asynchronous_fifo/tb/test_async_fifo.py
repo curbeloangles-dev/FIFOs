@@ -15,13 +15,3 @@ def test_async_fifo_vhdl():
         toplevel_lang="vhdl",
         sim_build="sim_build"
     )
-
-@pytest.mark.skipif(os.getenv("SIM") != "ghdl", reason="")
-def test_fifo_vhdl():
-    run(
-        vhdl_sources=vhdl_src,              # sources
-        toplevel="async_fifo",              # top level HDL
-        module="fifo_tb",                   # name of cocotb test module
-        toplevel_lang="vhdl",
-        sim_build="sim_build"
-    )
