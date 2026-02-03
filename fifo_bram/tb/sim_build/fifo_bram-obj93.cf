@@ -1,4 +1,0 @@
-v 4
-file / "/home/yohan/Desktop/MyGit/FIFOs/fifo_bram/src/fifo_bram.vhd" "09e71a43c3ba29a6336ccedda70949e250e49d52" "20260203083655.769":
-  entity fifo_bram at 1( 0) + 0 on 11;
-  architecture rtl of fifo_bram at 75( 2965) + 0 on 12;

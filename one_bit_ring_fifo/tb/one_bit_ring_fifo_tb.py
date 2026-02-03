@@ -5,17 +5,9 @@ import  cocotb
 from    cocotb.triggers             import Timer, RisingEdge
 from    cocotb.clock                import Clock
 from    cocotb_coverage.coverage    import *
-
-# addata_ing fw_libs to the system path
-import os
-import sys
-# os.path.
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'node_modules/@quside/qvm/src'))
-import test_utils
-from    functional_coverage_tb  import FC
+from    functional_coverage_tb      import FC
 
 # Constants
-# Clock Period
 c_CLK_PERIOD = 10       # ns
 
 # ==============================================================================
@@ -45,6 +37,14 @@ class TB(object):
         self.fc = FC(dut)
         cocotb.start_soon(self.fc.run_empty_coverage())
         cocotb.start_soon(self.fc.run_full_coverage())
+
+    # reset dut
+    async def reset(self):
+        self.dut.rstn.value = 0
+        await RisingEdge(self.dut.clk)
+        await RisingEdge(self.dut.clk)
+        self.dut.rstn.value = 1
+        await RisingEdge(self.dut.clk)
 
     # data_out_ready signal control
     async def control_data_out_ready(self, randomize = False):
@@ -142,7 +142,7 @@ async def master_random_valid_slave_always_ready(dut):
 
     # TB class
     tb = TB(dut)
-    await test_utils.reset(dut.clk, dut.rstn)
+    await tb.reset()
 
     # Run ring buffer golden model
     cocotb.start_soon(tb.control_data_out_ready(randomize = True))
@@ -170,7 +170,7 @@ async def master_random_valid_slave_random_ready(dut):
 
     # TB class
     tb = TB(dut)
-    await test_utils.reset(dut.clk, dut.rstn)
+    await tb.reset()
 
     # Run ring buffer golden model
     cocotb.start_soon(tb.control_data_out_ready(randomize = False))
@@ -198,7 +198,7 @@ async def master_always_valid_slave_always_ready(dut):
 
     # TB class
     tb = TB(dut)
-    await test_utils.reset(dut.clk, dut.rstn)
+    await tb.reset()
 
     # Run ring buffer golden model
     cocotb.start_soon(tb.control_data_out_ready(randomize = False))
@@ -224,7 +224,7 @@ async def master_always_valid_slave_random_ready(dut):
 
     # TB class
     tb = TB(dut)
-    await test_utils.reset(dut.clk, dut.rstn)
+    await tb.reset()
 
     # Run ring buffer golden model
     cocotb.start_soon(tb.control_data_out_ready(randomize = True))
@@ -253,7 +253,7 @@ async def functional_coverage(dut):
     dut._log.info(f"Functional coverage percentage: {cg_group.cover_percentage:.2f}%")  # Log the coverage level of the whole covergroup
 
     coverage_file = os.path.join(
-        os.getenv("RESULT_PATH", "../doc/"), "functional_coverage.yml"
+        os.getenv("RESULT_PATH", "../../doc/"), "functional_coverage.yml"
     )
     coverage_db.export_to_yaml(filename=coverage_file)
 

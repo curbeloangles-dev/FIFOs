@@ -1,0 +1,6 @@
+transcript
+build/
+sim_build/
+__pycache__/
+.pytest_cache/
+package-lock.json

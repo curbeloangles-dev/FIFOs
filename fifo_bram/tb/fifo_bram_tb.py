@@ -406,6 +406,6 @@ async def fifo_empty(dut):
     dut._log.info(f"Functional coverage percentage: {cg_group.cover_percentage:.2f}%")  # Log the coverage level of the whole covergroup
 
     coverage_file = os.path.join(
-        os.getenv("RESULT_PATH", "../doc/"), "functional_coverage.yml"
+        os.getenv("RESULT_PATH", "../../doc/"), "functional_coverage.yml"
     )
     coverage_db.export_to_yaml(filename=coverage_file)

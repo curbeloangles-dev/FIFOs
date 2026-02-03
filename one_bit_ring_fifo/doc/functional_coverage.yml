@@ -6,8 +6,8 @@ one_bit_ring_fifo:
 one_bit_ring_fifo.empty:
   at_least: 1
   bins:_hits:
-    empty: 521
-    no_empty: 3158
+    empty: 2797
+    no_empty: 26073
   cover_percentage: 100.0
   coverage: 2
   size: 2
@@ -16,8 +16,8 @@ one_bit_ring_fifo.empty:
 one_bit_ring_fifo.full:
   at_least: 1
   bins:_hits:
-    full: 183
-    no_full: 3496
+    full: 4758
+    no_full: 24112
   cover_percentage: 100.0
   coverage: 2
   size: 2
