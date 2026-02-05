@@ -64,7 +64,7 @@ jobs:
             echo "✅ Package $PKG@$VERSION already exists. Skipping."
           fi
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
   asynchronous_fifo_test:
@@ -129,7 +129,7 @@ jobs:
             echo "✅ Package $PKG@$VERSION already exists. Skipping."
           fi
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
   fifo_bram_test:
@@ -194,7 +194,7 @@ jobs:
             echo "✅ Package $PKG@$VERSION already exists. Skipping."
           fi
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
   one_bit_ring_fifo_test:
@@ -259,4 +259,4 @@ jobs:
             echo "✅ Package $PKG@$VERSION already exists. Skipping."
           fi
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
