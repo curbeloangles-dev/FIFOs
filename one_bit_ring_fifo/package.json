@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "One bit ring buffer fifo",
   "author": "curbeloangles",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/curbeloangles-dev/FIFOs.git"
+  },
   "keywords": [
     "FIFO",
     "ring"
