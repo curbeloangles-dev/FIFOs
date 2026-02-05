@@ -1,6 +1,10 @@
 name: CDC CI/CD pipeline
 on: [push, pull_request]
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   asymmetric_fifo_test:
     runs-on: ubuntu-latest
