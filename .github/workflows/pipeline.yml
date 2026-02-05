@@ -264,6 +264,8 @@ jobs:
 
   axi_stream_fifo_test:
     runs-on: ubuntu-latest
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
 
     steps:
       - name: Checkout repository
@@ -335,6 +337,8 @@ jobs:
 
   axi_stream_width_converter_test:
     runs-on: ubuntu-latest
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
 
     steps:
       - name: Checkout repository
