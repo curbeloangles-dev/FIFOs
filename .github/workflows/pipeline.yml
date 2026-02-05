@@ -260,3 +260,143 @@ jobs:
           fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
+
+
+  axi_stream_fifo_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup GHDL
+        uses: ghdl/setup-ghdl@v1
+        with:
+          version: nightly
+          backend: llvm
+          investigate: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10.12'
+
+      - name: Install dependencies
+        run: |
+          pip install cocotb==1.8.1 pytest cocotb-test
+
+      - name: Download dependencies
+        run: |       
+          # Create temporary .npmrc file in this directory
+          echo "@curbeloangles-dev:registry=https://npm.pkg.github.com/" > .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
+          npm install
+
+      - name: Run axi_stream_fifo test
+        run: |
+          cd axi_stream_fifo
+          npm run test
+
+  axi_stream_fifo_release:
+    needs: axi_stream_fifo_test
+    runs-on: ubuntu-latest
+
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://npm.pkg.github.com/'
+
+      - name: Publish axi_stream_fifo IP if version changed
+        working-directory: ./axi_stream_fifo/
+        run: |       
+          # Create temporary .npmrc file in this directory
+          echo "@curbeloangles-dev:registry=https://npm.pkg.github.com/" > .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
+        
+          # Check if the package version already exists
+          VERSION=$(jq -r .version package.json)
+          PKG=@curbeloangles-dev/axi_stream_fifo
+          if ! npm view $PKG@$VERSION --registry=https://npm.pkg.github.com/ > /dev/null 2>&1; then
+            echo "📦 Package $PKG@$VERSION does not exist. Publishing..."
+            npm publish --access public
+            echo "✅ Successfully published $PKG@$VERSION"
+          else
+            echo "✅ Package $PKG@$VERSION already exists. Skipping."
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
+
+
+  axi_stream_width_converter_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup GHDL
+        uses: ghdl/setup-ghdl@v1
+        with:
+          version: nightly
+          backend: llvm
+          investigate: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10.12'
+
+      - name: Install dependencies
+        run: |
+          pip install cocotb==1.8.1 pytest cocotb-test
+
+      - name: Download dependencies
+        run: |       
+          # Create temporary .npmrc file in this directory
+          echo "@curbeloangles-dev:registry=https://npm.pkg.github.com/" > .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
+          npm install
+
+      - name: Run axi_stream_width_converter test
+        run: |
+          cd axi_stream_width_converter
+          npm run test
+
+  axi_stream_width_converter_release:
+    needs: axi_stream_width_converter_test
+    runs-on: ubuntu-latest
+
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://npm.pkg.github.com/'
+
+      - name: Publish axi_stream_width_converter IP if version changed
+        working-directory: ./axi_stream_width_converter/
+        run: |       
+          # Create temporary .npmrc file in this directory
+          echo "@curbeloangles-dev:registry=https://npm.pkg.github.com/" > .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
+        
+          # Check if the package version already exists
+          VERSION=$(jq -r .version package.json)
+          PKG=@curbeloangles-dev/axi_stream_fifo
+          if ! npm view $PKG@$VERSION --registry=https://npm.pkg.github.com/ > /dev/null 2>&1; then
+            echo "📦 Package $PKG@$VERSION does not exist. Publishing..."
+            npm publish --access public
+            echo "✅ Successfully published $PKG@$VERSION"
+          else
+            echo "✅ Package $PKG@$VERSION already exists. Skipping."
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}

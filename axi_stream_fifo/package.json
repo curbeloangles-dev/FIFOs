@@ -1,0 +1,31 @@
+{
+  "name": "@curbeloangles-dev/axi_stream_fifo",
+  "version": "1.0.0",
+  "author": "curbeloangles",
+  "description": "AXI Stream FIFO",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/curbeloangles-dev/FIFOs.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/",
+    "access": "public"
+  },
+  "keywords": [
+    "AXI-Stream",
+    "FIFO",
+    "asynchronous"
+  ],
+  "files": [
+    "axi_stream_fifo",
+    "src",
+    "README.md"
+  ],
+  "dependencies": {
+    "@curbeloangles-dev/asynchronous_fifo": "v1.0.0"
+  },
+  "scripts": {
+    "postinstall": "",
+    "test": "cd tb; SIM=ghdl pytest -o log_cli=True test_axis_fifo.py"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "@curbeloangles-dev/axi_stream_width_converter",
+  "version": "1.0.0",
+  "author": "curbeloangles",
+  "description": "AXI Stream Width Converter FIFO",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/curbeloangles-dev/FIFOs.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/",
+    "access": "public"
+  },
+  "keywords": [
+    "AXI-Stream",
+    "FIFO",
+    "Width converter"
+  ],
+  "files": [
+    "doc",
+    "src",
+    "tb",
+    "README.md"
+  ],
+  "dependencies": {
+    "@curbeloangles-dev/asymmetric_fifo": "v1.0.0"
+  },
+  "scripts": {
+    "postinstall": "",
+    "test": "cd tb; SIM=ghdl pytest -o log_cli=True test_axi_stream_width_converter.py"
+  }
+}

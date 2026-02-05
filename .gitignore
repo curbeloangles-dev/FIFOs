@@ -1,4 +1,6 @@
 transcript
+node_modules/
+.npmrc
 build/
 sim_build/
 __pycache__/
