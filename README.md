@@ -6,6 +6,8 @@ This repository contains a collection of FIFO (First-In-First-Out) hardware IP c
 - `asynchronous_fifo/` — Asynchronous FIFO for crossing clock domains using dual-port memory and proper pointer synchronization.
 - `fifo_bram/` — FIFO implemented using block RAM (BRAM) primitives for FPGA BRAM-based buffering.
 - `one_bit_ring_fifo/` — One-bit ring FIFO: a minimal FIFO structure with ring buffer behavior for single-bit flows.
+- `axi_stream_fifo/` — AXI-Stream compatible FIFO component (VHDL) suitable for streaming interfaces.
+- `axi_stream_width_converter/` — AXI-Stream width converter FIFO (handles data-width up/down conversion)
 
 Each implementation follows a similar folder layout:
 - `package.json` — Metadata for packaging/publishing the IP (name, version). Not all are published.
@@ -28,6 +30,11 @@ Implement large FIFOs using FPGA block RAM (BRAM) to provide compact, high-capac
 ### one_bit_ring_fifo
 A minimal, single-bit ring FIFO used for low-overhead bitwise buffering. Useful for control signals or single-bit streams.
 
+### axi_stream_fifo
+AXI-Stream compatible FIFO to buffer streaming data between AXI-Stream producers and consumers.
+
+### axi_stream_width_converter
+Convert AXI-Stream data widths while buffering data in a FIFO so that upstream and downstream widths can differ.
 
 ## Running tests locally
 These projects use cocotb and pytest for Python-based testbenches. To run tests locally:

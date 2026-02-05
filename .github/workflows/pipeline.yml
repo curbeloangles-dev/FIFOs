@@ -288,8 +288,9 @@ jobs:
       - name: Download dependencies
         run: |       
           # Create temporary .npmrc file in this directory
-          echo "@curbeloangles-dev:registry=https://npm.pkg.github.com/" > .npmrc
-          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
+          echo "@curbeloangles-dev:registry=https://npm.pkg.github.com/" > axi_stream_fifo/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> axi_stream_fifo/.npmrc
+          cd axi_stream_fifo
           npm install
 
       - name: Run axi_stream_fifo test
@@ -358,8 +359,9 @@ jobs:
       - name: Download dependencies
         run: |       
           # Create temporary .npmrc file in this directory
-          echo "@curbeloangles-dev:registry=https://npm.pkg.github.com/" > .npmrc
-          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
+          echo "@curbeloangles-dev:registry=https://npm.pkg.github.com/" > axi_stream_width_converter/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> axi_stream_width_converter/.npmrc
+          cd axi_stream_width_converter
           npm install
 
       - name: Run axi_stream_width_converter test
