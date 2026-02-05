@@ -1,10 +1,6 @@
 name: CDC CI/CD pipeline
 on: [push, pull_request]
 
-permissions:
-  contents: read
-  packages: write
-
 jobs:
   asymmetric_fifo_test:
     runs-on: ubuntu-latest
@@ -68,7 +64,7 @@ jobs:
             echo "✅ Package $PKG@$VERSION already exists. Skipping."
           fi
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
 
 
   asynchronous_fifo_test:
@@ -133,7 +129,7 @@ jobs:
             echo "✅ Package $PKG@$VERSION already exists. Skipping."
           fi
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
 
 
   fifo_bram_test:
@@ -198,7 +194,7 @@ jobs:
             echo "✅ Package $PKG@$VERSION already exists. Skipping."
           fi
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
 
 
   one_bit_ring_fifo_test:
@@ -263,4 +259,4 @@ jobs:
             echo "✅ Package $PKG@$VERSION already exists. Skipping."
           fi
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
