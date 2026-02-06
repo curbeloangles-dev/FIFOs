@@ -6,8 +6,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       should_publish: ${{ steps.check_version.outputs.should_publish }}
-    env:
-      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
     
     steps:
       - name: Checkout repository
@@ -30,6 +28,8 @@ jobs:
             echo "📦 Package $PKG@$VERSION does not exist. Will run tests and publish."
             echo "should_publish=true" >> $GITHUB_OUTPUT
           fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
 
   asymmetric_fifo_test:
     needs: asymmetric_fifo_check
