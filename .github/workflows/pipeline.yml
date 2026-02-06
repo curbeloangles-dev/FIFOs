@@ -21,7 +21,7 @@ jobs:
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           
           # Check if package version exists
-          if npm view $PKG@$VERSION --registry=https://npm.pkg.github.com/ > /dev/null 2>&1; then
+          if npm view $PKG@$VERSION --registry=https://npm.pkg.github.com/ --silent; then
             echo "✅ Package $PKG@$VERSION already exists. Skipping tests and publish."
             echo "should_publish=false" >> $GITHUB_OUTPUT
           else
