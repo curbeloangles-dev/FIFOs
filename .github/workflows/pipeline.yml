@@ -423,8 +423,8 @@ jobs:
           fi
 
   axi_stream_fifo_test:
-    needs: one_bit_ring_fifo_check
-    if: needs.one_bit_ring_fifo_check.outputs.should_publish == 'true'
+    needs: axi_stream_fifo_check
+    if: needs.axi_stream_fifo_check.outputs.should_publish == 'true'
     runs-on: ubuntu-latest
     env:
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
@@ -530,8 +530,8 @@ jobs:
           fi
 
   axi_stream_width_converter_test:
-    needs: one_bit_ring_fifo_check
-    if: needs.one_bit_ring_fifo_check.outputs.should_publish == 'true'
+    needs: axi_stream_width_converter_check
+    if: needs.axi_stream_width_converter_check.outputs.should_publish == 'true'
     runs-on: ubuntu-latest
     env:
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
@@ -570,12 +570,12 @@ jobs:
           npm run test
 
   axi_stream_width_converter_release:
-    needs: [axi_stream_fifo_check, axi_stream_fifo_test]
+    needs: [axi_stream_width_converter_check, axi_stream_width_converter_test]
     if: |
       always() &&
       github.ref == 'refs/heads/master' &&
-      needs.axi_stream_fifo_check.outputs.should_publish == 'true' &&
-      needs.axi_stream_fifo_test.result == 'success'
+      needs.axi_stream_width_converter_check.outputs.should_publish == 'true' &&
+      needs.axi_stream_width_converter_test.result == 'success'
     runs-on: ubuntu-latest
     env:
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
