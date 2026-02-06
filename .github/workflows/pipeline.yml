@@ -2,6 +2,7 @@ name: CDC CI/CD pipeline
 on: [push, pull_request]
 
 jobs:
+  # asymmetric_fifo jobs
   asymmetric_fifo_check:
     runs-on: ubuntu-latest
     outputs:
@@ -71,6 +72,8 @@ jobs:
       needs.asymmetric_fifo_check.outputs.should_publish == 'true' &&
       needs.asymmetric_fifo_test.result == 'success'
     runs-on: ubuntu-latest
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
 
     steps:
       - uses: actions/checkout@v4
@@ -81,9 +84,10 @@ jobs:
           node-version: '20'
           registry-url: 'https://npm.pkg.github.com/'
 
-      - name: Publish asymmetric_fifo IP
+      - name: Publish asymmetric_fifo IP if version changed
         working-directory: ./asymmetric_fifo/
         run: |       
+          # Create temporary .npmrc file in this directory
           echo "@curbeloangles-dev:registry=https://npm.pkg.github.com/" > .npmrc
           echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
           
@@ -92,15 +96,45 @@ jobs:
           
           echo "📦 Publishing $PKG@$VERSION..."
           npm publish
-          echo "✅ Successfully published $PKG@$VERSION"
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
+          echo "✅ Successfully published $PKG@$VERSION"        
 
+
+  # asynchronous_fifo jobs
+  asynchronous_fifo_check:
+    runs-on: ubuntu-latest
+    outputs:
+      should_publish: ${{ steps.check_version.outputs.should_publish }}
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Check if version needs publishing
+        id: check_version
+        working-directory: ./asynchronous_fifo/
+        run: |
+          # Create temporary .npmrc file in this directory
+          echo "@curbeloangles-dev:registry=https://npm.pkg.github.com/" > .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
+          
+          # Check if package version exists
+          VERSION=$(jq -r .version package.json)
+          PKG=@curbeloangles-dev/asynchronous_fifo          
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          if npm view $PKG@$VERSION --registry=https://npm.pkg.github.com/ --silent; then
+            echo "✅ Package $PKG@$VERSION already exists. Skipping tests and publish."
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+          else
+            echo "📦 Package $PKG@$VERSION does not exist. Will run tests and publish."
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          fi
 
   asynchronous_fifo_test:
+    needs: asynchronous_fifo_check
+    if: needs.asynchronous_fifo_check.outputs.should_publish == 'true'
     runs-on: ubuntu-latest
-    env:
-      SIM: ghdl
 
     steps:
       - name: Checkout repository
@@ -128,10 +162,16 @@ jobs:
           npm run test
 
   asynchronous_fifo_release:
-    needs: asynchronous_fifo_test
+    needs: [asynchronous_fifo_check, asynchronous_fifo_test]
+    if: |
+      always() &&
+      github.ref == 'refs/heads/master' &&
+      needs.asynchronous_fifo_check.outputs.should_publish == 'true' &&
+      needs.asynchronous_fifo_test.result == 'success'
     runs-on: ubuntu-latest
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
 
-    if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v4
 
@@ -148,24 +188,50 @@ jobs:
           echo "@curbeloangles-dev:registry=https://npm.pkg.github.com/" > .npmrc
           echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
         
-          # Check if the package version already exists
           VERSION=$(jq -r .version package.json)
           PKG=@curbeloangles-dev/asynchronous_fifo
-          if ! npm view $PKG@$VERSION --registry=https://npm.pkg.github.com/ > /dev/null 2>&1; then
-            echo "📦 Package $PKG@$VERSION does not exist. Publishing..."
-            npm publish --access public
-            echo "✅ Successfully published $PKG@$VERSION"
+          
+          echo "📦 Publishing $PKG@$VERSION..."
+          npm publish
+          echo "✅ Successfully published $PKG@$VERSION"  
+          
+          
+  # fifo_bram jobs
+  fifo_bram_check:
+    runs-on: ubuntu-latest
+    outputs:
+      should_publish: ${{ steps.check_version.outputs.should_publish }}
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Check if version needs publishing
+        id: check_version
+        working-directory: ./fifo_bram/
+        run: |
+          # Create temporary .npmrc file in this directory
+          echo "@curbeloangles-dev:registry=https://npm.pkg.github.com/" > .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
+          
+          # Check if package version exists
+          VERSION=$(jq -r .version package.json)
+          PKG=@curbeloangles-dev/fifo_bram          
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          if npm view $PKG@$VERSION --registry=https://npm.pkg.github.com/ --silent; then
+            echo "✅ Package $PKG@$VERSION already exists. Skipping tests and publish."
+            echo "should_publish=false" >> $GITHUB_OUTPUT
           else
-            echo "✅ Package $PKG@$VERSION already exists. Skipping."
+            echo "📦 Package $PKG@$VERSION does not exist. Will run tests and publish."
+            echo "should_publish=true" >> $GITHUB_OUTPUT
           fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
-
 
   fifo_bram_test:
+    needs: fifo_bram_check
+    if: needs.fifo_bram_check.outputs.should_publish == 'true'
     runs-on: ubuntu-latest
-    env:
-      SIM: ghdl
 
     steps:
       - name: Checkout repository
@@ -193,10 +259,16 @@ jobs:
           npm run test
 
   fifo_bram_release:
-    needs: fifo_bram_test
+    needs: [fifo_bram_check, fifo_bram_test]
+    if: |
+      always() &&
+      github.ref == 'refs/heads/master' &&
+      needs.fifo_bram_check.outputs.should_publish == 'true' &&
+      needs.fifo_bram_test.result == 'success'
     runs-on: ubuntu-latest
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
 
-    if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v4
 
@@ -213,24 +285,50 @@ jobs:
           echo "@curbeloangles-dev:registry=https://npm.pkg.github.com/" > .npmrc
           echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
         
-          # Check if the package version already exists
           VERSION=$(jq -r .version package.json)
           PKG=@curbeloangles-dev/fifo_bram
-          if ! npm view $PKG@$VERSION --registry=https://npm.pkg.github.com/ > /dev/null 2>&1; then
-            echo "📦 Package $PKG@$VERSION does not exist. Publishing..."
-            npm publish --access public
-            echo "✅ Successfully published $PKG@$VERSION"
-          else
-            echo "✅ Package $PKG@$VERSION already exists. Skipping."
-          fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
+          
+          echo "📦 Publishing $PKG@$VERSION..."
+          npm publish
+          echo "✅ Successfully published $PKG@$VERSION"  
 
+
+  # one_bit_ring_fifo jobs
+  one_bit_ring_fifo_check:
+    runs-on: ubuntu-latest
+    outputs:
+      should_publish: ${{ steps.check_version.outputs.should_publish }}
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Check if version needs publishing
+        id: check_version
+        working-directory: ./one_bit_ring_fifo/
+        run: |
+          # Create temporary .npmrc file in this directory
+          echo "@curbeloangles-dev:registry=https://npm.pkg.github.com/" > .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
+          
+          # Check if package version exists
+          VERSION=$(jq -r .version package.json)
+          PKG=@curbeloangles-dev/one_bit_ring_fifo          
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          if npm view $PKG@$VERSION --registry=https://npm.pkg.github.com/ --silent; then
+            echo "✅ Package $PKG@$VERSION already exists. Skipping tests and publish."
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+          else
+            echo "📦 Package $PKG@$VERSION does not exist. Will run tests and publish."
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          fi
 
   one_bit_ring_fifo_test:
+    needs: one_bit_ring_fifo_check
+    if: needs.one_bit_ring_fifo_check.outputs.should_publish == 'true'
     runs-on: ubuntu-latest
-    env:
-      SIM: ghdl
 
     steps:
       - name: Checkout repository
@@ -258,10 +356,16 @@ jobs:
           npm run test_all
 
   one_bit_ring_fifo_release:
-    needs: one_bit_ring_fifo_test
+    needs: [one_bit_ring_fifo_check, one_bit_ring_fifo_test]
+    if: |
+      always() &&
+      github.ref == 'refs/heads/master' &&
+      needs.one_bit_ring_fifo_check.outputs.should_publish == 'true' &&
+      needs.one_bit_ring_fifo_test.result == 'success'
     runs-on: ubuntu-latest
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
 
-    if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v4
 
@@ -278,21 +382,49 @@ jobs:
           echo "@curbeloangles-dev:registry=https://npm.pkg.github.com/" > .npmrc
           echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
         
-          # Check if the package version already exists
           VERSION=$(jq -r .version package.json)
           PKG=@curbeloangles-dev/one_bit_ring_fifo
-          if ! npm view $PKG@$VERSION --registry=https://npm.pkg.github.com/ > /dev/null 2>&1; then
-            echo "📦 Package $PKG@$VERSION does not exist. Publishing..."
-            npm publish --access public
-            echo "✅ Successfully published $PKG@$VERSION"
-          else
-            echo "✅ Package $PKG@$VERSION already exists. Skipping."
-          fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
+          
+          echo "📦 Publishing $PKG@$VERSION..."
+          npm publish
+          echo "✅ Successfully published $PKG@$VERSION" 
 
+
+  # axi_stream_fifo jobs
+  axi_stream_fifo_check:
+    runs-on: ubuntu-latest
+    outputs:
+      should_publish: ${{ steps.check_version.outputs.should_publish }}
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Check if version needs publishing
+        id: check_version
+        working-directory: ./axi_stream_fifo/
+        run: |
+          # Create temporary .npmrc file in this directory
+          echo "@curbeloangles-dev:registry=https://npm.pkg.github.com/" > .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
+          
+          # Check if package version exists
+          VERSION=$(jq -r .version package.json)
+          PKG=@curbeloangles-dev/axi_stream_fifo
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          if npm view $PKG@$VERSION --registry=https://npm.pkg.github.com/ --silent; then
+            echo "✅ Package $PKG@$VERSION already exists. Skipping tests and publish."
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+          else
+            echo "📦 Package $PKG@$VERSION does not exist. Will run tests and publish."
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          fi
 
   axi_stream_fifo_test:
+    needs: one_bit_ring_fifo_check
+    if: needs.one_bit_ring_fifo_check.outputs.should_publish == 'true'
     runs-on: ubuntu-latest
     env:
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
@@ -331,10 +463,16 @@ jobs:
           npm run test
 
   axi_stream_fifo_release:
-    needs: axi_stream_fifo_test
+    needs: [axi_stream_fifo_check, axi_stream_fifo_test]
+    if: |
+      always() &&
+      github.ref == 'refs/heads/master' &&
+      needs.axi_stream_fifo_check.outputs.should_publish == 'true' &&
+      needs.axi_stream_fifo_test.result == 'success'
     runs-on: ubuntu-latest
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
 
-    if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v4
 
@@ -351,21 +489,49 @@ jobs:
           echo "@curbeloangles-dev:registry=https://npm.pkg.github.com/" > .npmrc
           echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
         
-          # Check if the package version already exists
           VERSION=$(jq -r .version package.json)
           PKG=@curbeloangles-dev/axi_stream_fifo
-          if ! npm view $PKG@$VERSION --registry=https://npm.pkg.github.com/ > /dev/null 2>&1; then
-            echo "📦 Package $PKG@$VERSION does not exist. Publishing..."
-            npm publish --access public
-            echo "✅ Successfully published $PKG@$VERSION"
-          else
-            echo "✅ Package $PKG@$VERSION already exists. Skipping."
-          fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
+          
+          echo "📦 Publishing $PKG@$VERSION..."
+          npm publish
+          echo "✅ Successfully published $PKG@$VERSION" 
 
+   
+  # axi_stream_width_converter jobs
+  axi_stream_width_converter_check:
+    runs-on: ubuntu-latest
+    outputs:
+      should_publish: ${{ steps.check_version.outputs.should_publish }}
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Check if version needs publishing
+        id: check_version
+        working-directory: ./axi_stream_width_converter/
+        run: |
+          # Create temporary .npmrc file in this directory
+          echo "@curbeloangles-dev:registry=https://npm.pkg.github.com/" > .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
+          
+          # Check if package version exists
+          VERSION=$(jq -r .version package.json)
+          PKG=@curbeloangles-dev/axi_stream_width_converter
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          if npm view $PKG@$VERSION --registry=https://npm.pkg.github.com/ --silent; then
+            echo "✅ Package $PKG@$VERSION already exists. Skipping tests and publish."
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+          else
+            echo "📦 Package $PKG@$VERSION does not exist. Will run tests and publish."
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          fi
 
   axi_stream_width_converter_test:
+    needs: one_bit_ring_fifo_check
+    if: needs.one_bit_ring_fifo_check.outputs.should_publish == 'true'
     runs-on: ubuntu-latest
     env:
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
@@ -404,10 +570,16 @@ jobs:
           npm run test
 
   axi_stream_width_converter_release:
-    needs: axi_stream_width_converter_test
+    needs: [axi_stream_fifo_check, axi_stream_fifo_test]
+    if: |
+      always() &&
+      github.ref == 'refs/heads/master' &&
+      needs.axi_stream_fifo_check.outputs.should_publish == 'true' &&
+      needs.axi_stream_fifo_test.result == 'success'
     runs-on: ubuntu-latest
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
 
-    if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v4
 
@@ -424,15 +596,9 @@ jobs:
           echo "@curbeloangles-dev:registry=https://npm.pkg.github.com/" > .npmrc
           echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
         
-          # Check if the package version already exists
           VERSION=$(jq -r .version package.json)
-          PKG=@curbeloangles-dev/axi_stream_fifo
-          if ! npm view $PKG@$VERSION --registry=https://npm.pkg.github.com/ > /dev/null 2>&1; then
-            echo "📦 Package $PKG@$VERSION does not exist. Publishing..."
-            npm publish --access public
-            echo "✅ Successfully published $PKG@$VERSION"
-          else
-            echo "✅ Package $PKG@$VERSION already exists. Skipping."
-          fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
+          PKG=@curbeloangles-dev/axi_stream_width_converter
+          
+          echo "📦 Publishing $PKG@$VERSION..."
+          npm publish
+          echo "✅ Successfully published $PKG@$VERSION" 
