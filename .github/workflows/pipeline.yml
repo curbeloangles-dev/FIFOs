@@ -6,6 +6,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       should_publish: ${{ steps.check_version.outputs.should_publish }}
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
     steps:
       - name: Checkout repository
