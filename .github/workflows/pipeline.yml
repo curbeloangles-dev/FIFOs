@@ -6,6 +6,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       should_publish: ${{ steps.check_version.outputs.should_publish }}
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
     
     steps:
       - name: Checkout repository
@@ -15,12 +17,14 @@ jobs:
         id: check_version
         working-directory: ./asymmetric_fifo/
         run: |
-          VERSION=$(jq -r .version package.json)
-          PKG=@curbeloangles-dev/asymmetric_fifo
-          
-          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          # Create temporary .npmrc file in this directory
+          echo "@curbeloangles-dev:registry=https://npm.pkg.github.com/" > .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
           
           # Check if package version exists
+          VERSION=$(jq -r .version package.json)
+          PKG=@curbeloangles-dev/asymmetric_fifo          
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
           if npm view $PKG@$VERSION --registry=https://npm.pkg.github.com/ --silent; then
             echo "✅ Package $PKG@$VERSION already exists. Skipping tests and publish."
             echo "should_publish=false" >> $GITHUB_OUTPUT
@@ -28,8 +32,6 @@ jobs:
             echo "📦 Package $PKG@$VERSION does not exist. Will run tests and publish."
             echo "should_publish=true" >> $GITHUB_OUTPUT
           fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
 
   asymmetric_fifo_test:
     needs: asymmetric_fifo_check
