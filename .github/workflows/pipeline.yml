@@ -7,7 +7,7 @@ jobs:
     outputs:
       should_publish: ${{ steps.check_version.outputs.should_publish }}
     env:
-      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
     
     steps:
       - name: Checkout repository
@@ -92,7 +92,7 @@ jobs:
           npm publish
           echo "✅ Successfully published $PKG@$VERSION"
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_DEV }}
 
 
   asynchronous_fifo_test:
