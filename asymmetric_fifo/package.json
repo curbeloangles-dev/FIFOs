@@ -16,6 +16,6 @@
   "dependencies": {},
   "scripts": {
     "postinstall": "",
-    "test": "cd tb; pytest -o log_cli=True test_asymmetric_sync_fifo.py"
+    "test": "cd tb; SIM=ghdl pytest -o log_cli=True test_asymmetric_sync_fifo.py"
   }
 }
