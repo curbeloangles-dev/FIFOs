@@ -2,7 +2,7 @@ name: CDC CI/CD pipeline
 on: [push, pull_request]
 
 jobs:
-    asymmetric_fifo_check:
+  asymmetric_fifo_check:
     runs-on: ubuntu-latest
     outputs:
       should_publish: ${{ steps.check_version.outputs.should_publish }}
@@ -30,67 +30,67 @@ jobs:
           fi
 
   asymmetric_fifo_test:
-  needs: asymmetric_fifo_check
-  if: needs.asymmetric_fifo_check.outputs.should_publish == 'true'
-  runs-on: ubuntu-latest
+    needs: asymmetric_fifo_check
+    if: needs.asymmetric_fifo_check.outputs.should_publish == 'true'
+    runs-on: ubuntu-latest
 
-  steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Setup GHDL
-      uses: ghdl/setup-ghdl@v1
-      with:
-        version: nightly
-        backend: llvm
-        investigate: true
+      - name: Setup GHDL
+        uses: ghdl/setup-ghdl@v1
+        with:
+          version: nightly
+          backend: llvm
+          investigate: true
 
-    - name: Setup Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10.12'
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10.12'
 
-    - name: Install dependencies
-      run: |
-        pip install cocotb==1.8.1 pytest cocotb-test
+      - name: Install dependencies
+        run: |
+          pip install cocotb==1.8.1 pytest cocotb-test
 
-    - name: Run asymmetric_fifo test
-      run: |
-        cd asymmetric_fifo
-        npm run test
+      - name: Run asymmetric_fifo test
+        run: |
+          cd asymmetric_fifo
+          npm run test
 
   asymmetric_fifo_release:
-  needs: [asymmetric_fifo_check, asymmetric_fifo_test]
-  if: |
-    always() &&
-    github.ref == 'refs/heads/master' &&
-    needs.asymmetric_fifo_check.outputs.should_publish == 'true' &&
-    needs.asymmetric_fifo_test.result == 'success'
-  runs-on: ubuntu-latest
+    needs: [asymmetric_fifo_check, asymmetric_fifo_test]
+    if: |
+      always() &&
+      github.ref == 'refs/heads/master' &&
+      needs.asymmetric_fifo_check.outputs.should_publish == 'true' &&
+      needs.asymmetric_fifo_test.result == 'success'
+    runs-on: ubuntu-latest
 
-  steps:
-    - uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v4
 
-    - name: Use Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        registry-url: 'https://npm.pkg.github.com/'
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://npm.pkg.github.com/'
 
-    - name: Publish asymmetric_fifo IP
-      working-directory: ./asymmetric_fifo/
-      run: |       
-        echo "@curbeloangles-dev:registry=https://npm.pkg.github.com/" > .npmrc
-        echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
-        
-        VERSION=$(jq -r .version package.json)
-        PKG=@curbeloangles-dev/asymmetric_fifo
-        
-        echo "📦 Publishing $PKG@$VERSION..."
-        npm publish
-        echo "✅ Successfully published $PKG@$VERSION"
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish asymmetric_fifo IP
+        working-directory: ./asymmetric_fifo/
+        run: |       
+          echo "@curbeloangles-dev:registry=https://npm.pkg.github.com/" > .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
+          
+          VERSION=$(jq -r .version package.json)
+          PKG=@curbeloangles-dev/asymmetric_fifo
+          
+          echo "📦 Publishing $PKG@$VERSION..."
+          npm publish
+          echo "✅ Successfully published $PKG@$VERSION"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
   asynchronous_fifo_test:
